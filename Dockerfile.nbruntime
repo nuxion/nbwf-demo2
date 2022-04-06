@@ -1,0 +1,30 @@
+FROM python:3.8.10-slim as builder
+# supress pip warning
+# For Dev & Debug
+# ADD dist/nb_workflows-0.5.0-py3-none-any.whl /tmp
+
+SHELL ["/bin/bash", "-c"]
+ADD requirements.txt /tmp
+# suppress warning
+ENV PATH=$PATH:/root/.local/bin
+
+RUN apt-get -y update \
+    && apt-get install -y --no-install-recommends \
+       build-essential libopenblas-dev git \
+    && pip install --user -r /tmp/requirements.txt
+    # && pip install --user /tmp/nb_workflows-0.5.0-py3-none-any.whl
+FROM python:3.8.10-slim as app
+LABEL maintener="NB Workflows <package@nbworkflows.com>"
+RUN groupadd app -g 1090 \
+    && useradd -m -d /home/app app -u 1089 -g 1090 \
+    && apt-get update -y  \
+    && apt-get install -y --no-install-recommends \
+    vim-tiny
+COPY --from=builder --chown=app:app /root/.local /home/app/.local/
+COPY --chown=app:app . /app
+
+USER app
+WORKDIR /app
+ENV PATH=$PATH:/home/app/.local/bin
+ENV PYTHONPATH=/app
+# CMD ["python3", "run.py"]

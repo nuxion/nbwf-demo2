@@ -1,0 +1,38 @@
+version: 0.2.0
+project:
+  name: nbwf-demo2
+  projectid: voF17Gg7
+  owner: null
+  agent: null
+  users: null
+  description: null
+  repository: null
+runtime:
+  maintener: NB Workflows <package@nbworkflows.com>
+  image: python:3.8.10-slim
+  user:
+    uid: 1089
+    gid: 1090
+  build_packages: build-essential libopenblas-dev git
+  final_packages: vim-tiny
+workflows:
+  a_workflow_example:
+    alias: a_workflow_example
+    nbtask:
+      nb_name: welcome
+      params:
+        TIMEOUT: 5
+      machine: default
+      docker_version: latest
+      enabled: true
+      description: An example of how to configure a specific workflow
+      timeout: 10800
+      notifications_ok: null
+      notifications_fail: null
+    enabled: true
+    wfid: VKAqaKVrwKF
+    schedule:
+      start_in_min: 0
+      repeat: 1
+      cron: null
+      interval: '10'
